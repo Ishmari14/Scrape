@@ -13,5 +13,10 @@ app.use(
 );
 
 var exphbs = require("express-handlebars");
-app.engine("handlebars", exphbs({ defaultLayout: "main" })
-);
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+var port = process.env.PORT || 3000;
+app.listen(port, function () {
+    console.log("Listening on PORT " + port);
+});
