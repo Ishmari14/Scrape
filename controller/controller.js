@@ -13,7 +13,7 @@ router.get("/", function (req, res) {
 });
 
 router.get("/scrape", function (req, res) {
-    request("https://www.msnbc.com/", function (error, response, html) {
+    request("https://www.animenewsnetwork.com/", function (error, response, html) {
         var $ = cheerio.load(html);
         var titleArray = [];
 
