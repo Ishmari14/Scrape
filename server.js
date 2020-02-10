@@ -14,12 +14,12 @@ app.use(
 
 ///handlebars setup///
 
-
-app.use(express.static(process.cwd() + "/public"));
-
 var exphbs = require("express-handlebars");
-app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.engine("handlebars", exphbs({ defaultLayout: 'main' }));
 app.set("view engine", "handlebars");
+app.get('/', function (req, res) {
+    res.render('index', {});
+});
 
 ///mongoose connections///
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/Scrape";
