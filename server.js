@@ -97,83 +97,84 @@ app.get("/articles-json", function (req, res) {
     });
 });
 
-app.get("/clearAll", function (req, res) {
-    Article.remove({}, function (err, doc) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("removed all articles");
-        }
-    });
+// app.get("/clearAll", function (req, res) {
+//     Article.remove({}, function (err, doc) {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             console.log("removed all articles");
+//         }
+//     });
 
-    res.redirect("/articles-json");
-});
+//     res.redirect("/articles-json");
+// });
 
-app.get("/readArticle/:id", function (req, res) {
-    var article = req.params.id;
-    var hobj = {
-        article: [],
-        body: []
-    };
+// app.get("/readArticle/:id", function (req, res) {
+//     var article = req.params.id;
+//     var hobj = {
+//         article: [],
+//         body: []
+//     };
 
-    Article.findOne({ _id: articleID })
-        .populate("comment")
-        .exec(function (err, doc) {
-            if (err) {
-                console.log("Error: " + err);
-            } else {
-                hobj.article = doc;
-                var link = doc.link;
-                request(link, function (error, response, html) {
-                    var $ = cheerio.load(html);
+//     Article.findOne({ _id: articleID })
+//         .populate("comment")
+//         .exec(function (err, doc) {
+//             if (err) {
+//                 console.log("Error: " + err);
+//             } else {
+//                 hobj.article = doc;
+//                 var link = doc.link;
+//                 request(link, function (error, response, html) {
+//                     var $ = cheerio.load(html);
 
-                    $(".l-col__main").each(function (i, element) {
-                        hobj.body = $(this)
-                            .children(".c-entry-content")
-                            .children("p")
-                            .text();
+//                     $(".l-col__main").each(function (i, element) {
+//                         hobj.body = $(this)
+//                             .children(".c-entry-content")
+//                             .children("p")
+//                             .text();
 
-                        res.render("article", hobj);
-                        return false;
-                    });
-                });
-            }
-        });
-});
+//                         res.render("article", hobj);
+//                         return false;
+//                     });
+//                 });
+//             }
+//         });
+// });
 
-app.post("/comment/:id", function (req, res) {
-    var user = req.body.name;
-    var content = req.body.comment;
-    var articleID = req.params.id;
+// app.post("/comment/:id", function (req, res) {
+//     var user = req.body.name;
+//     var content = req.body.comment;
+//     var articleID = req.params.id;
 
-    var commendOb = {
-        name: user,
-        body: content
-    };
+//     var commendOb = {
+//         name: user,
+//         body: content
+//     };
 
-    var newComments = new Comment(commendOb);
+//     var newComments = new Comment(commendOb);
 
-    newComments.save(function (err, doc) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(doc._id);
-            console.log(articleID);
+//     newComments.save(function (err, doc) {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             console.log(doc._id);
+//             console.log(articleID);
 
-            Article.findOneAndUpdate(
-                { _id: req.params.id },
-                { $push: { comment: doc._id } },
-                { new: true }
-            ).exec(function (err, doc) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    res.redirect("/readArticle/" + articleID);
-                }
-            });
-        }
-    });
-});
+//             Article.findOneAndUpdate(
+//                 { _id: req.params.id },
+//                 { $push: { comment: doc._id } },
+//                 { new: true }
+//             ).exec(function (err, doc) {
+//                 if (err) {
+//                     console.log(err);
+//                 } else {
+//                     res.redirect("/readArticle/" + articleID);
+//                 }
+//             });
+//         }
+//     });
+// });
+
 var exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs({ defaultLayout: 'main' }));
 app.set("view engine", "handlebars");
