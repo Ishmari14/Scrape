@@ -81,11 +81,12 @@ app.get("/articles", function (req, res) {
         if (err) {
             console.log(err);
         } else {
-            var artcls = { article: doc };
-            res.render("index", artcls);
+            var artcl = { article: doc };
+            res.render("index", artcl);
         }
     });
 });
+
 
 app.get("/articles-json", function (req, res) {
     Article.find({}, function (err, doc) {
@@ -177,6 +178,8 @@ app.post("/comment/:id", function (req, res) {
         }
     });
 });
+
+module.exports = app;
 
 var exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs({ defaultLayout: 'main' }));
