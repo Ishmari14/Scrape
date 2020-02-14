@@ -1,5 +1,8 @@
 <div class="row">
-    <h3 class="card">{{article.title}}</h3>
+    <h3 class="card">{{doc.title}}</h3>
+    <h3 class="card">{{doc.link}}</h3>
+
+
     <h5 class="card-panel articleBody">{{body}}</h5>
 </div>
 
@@ -32,8 +35,8 @@
     <div class="col s2"></div>
     <div class="col s8">
         <h5>Comment:</h5>
-        {{#if article.comment}}
-        {{#each article.comment}}
+        {{#if doc.comment}}
+        {{#each doc.comment}}
         <div class="card">
             <p id="nameComment">{{name}}</p>
             <p>{{body}}</p>

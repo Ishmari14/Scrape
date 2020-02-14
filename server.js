@@ -70,7 +70,7 @@ app.get("/scrape", function (req, res) {
         });
 
 
-        res.redirect("/");
+        res.redirect("/articles");
 
 
     });
@@ -93,87 +93,90 @@ app.get("/articles-json", function (req, res) {
             console.log(err);
         } else {
             res.json(doc);
+
         }
     });
 });
 
-// app.get("/clearAll", function (req, res) {
-//     Article.remove({}, function (err, doc) {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             console.log("removed all articles");
-//         }
-//     });
 
-//     res.redirect("/articles-json");
-// });
 
-// app.get("/readArticle/:id", function (req, res) {
-//     var article = req.params.id;
-//     var hobj = {
-//         article: [],
-//         body: []
-//     };
+app.get("/clearAll", function (req, res) {
+    Article.remove({}, function (err, doc) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("removed all articles");
+        }
+    });
 
-//     Article.findOne({ _id: articleID })
-//         .populate("comment")
-//         .exec(function (err, doc) {
-//             if (err) {
-//                 console.log("Error: " + err);
-//             } else {
-//                 hobj.article = doc;
-//                 var link = doc.link;
-//                 request(link, function (error, response, html) {
-//                     var $ = cheerio.load(html);
+    res.redirect("/articles-json");
+});
 
-//                     $(".l-col__main").each(function (i, element) {
-//                         hobj.body = $(this)
-//                             .children(".c-entry-content")
-//                             .children("p")
-//                             .text();
+app.get("/readArticle/:id", function (req, res) {
+    var article = req.params.id;
+    var hobj = {
+        article: [],
+        body: []
+    };
 
-//                         res.render("article", hobj);
-//                         return false;
-//                     });
-//                 });
-//             }
-//         });
-// });
+    Article.findOne({ _id: articleID })
+        .populate("comment")
+        .exec(function (err, doc) {
+            if (err) {
+                console.log("Error: " + err);
+            } else {
+                hobj.article = doc;
+                var link = doc.link;
+                request(link, function (error, response, html) {
+                    var $ = cheerio.load(html);
 
-// app.post("/comment/:id", function (req, res) {
-//     var user = req.body.name;
-//     var content = req.body.comment;
-//     var articleID = req.params.id;
+                    $(".l-col__main").each(function (i, element) {
+                        hobj.body = $(this)
+                            .children(".c-entry-content")
+                            .children("p")
+                            .text();
 
-//     var commendOb = {
-//         name: user,
-//         body: content
-//     };
+                        res.render("article", hobj);
+                        return false;
+                    });
+                });
+            }
+        });
+});
 
-//     var newComments = new Comment(commendOb);
+app.post("/comment/:id", function (req, res) {
+    var user = req.body.name;
+    var content = req.body.comment;
+    var articleID = req.params.id;
 
-//     newComments.save(function (err, doc) {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             console.log(doc._id);
-//             console.log(articleID);
+    var commendOb = {
+        name: user,
+        body: content
+    };
 
-//             Article.findOneAndUpdate(
-//                 { _id: req.params.id },
-//                 { $push: { comment: doc._id } },
-//                 { new: true }
-//             ).exec(function (err, doc) {
-//                 if (err) {
-//                     console.log(err);
-//                 } else {
-//                     res.redirect("/readArticle/" + articleID);
-//                 }
-//             });
-//         }
-//     });
-// });
+    var newComments = new Comment(commendOb);
+
+    newComments.save(function (err, doc) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(doc._id);
+            console.log(articleID);
+
+            Article.findOneAndUpdate(
+                { _id: req.params.id },
+                { $push: { comment: doc._id } },
+                { new: true }
+            ).exec(function (err, doc) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.redirect("/readArticle/" + articleID);
+                }
+            });
+        }
+    });
+});
 
 var exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs({ defaultLayout: 'main' }));
