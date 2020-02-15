@@ -81,7 +81,18 @@ app.get("/articles", function (req, res) {
         if (err) {
             console.log(err);
         } else {
-            var artcl = { article: doc };
+
+            // console.log(artcl);
+            let articleContext = {
+                articles: doc.map(document => {
+                    return {
+                        title: document.title,
+                        link: document.link
+                    }
+                })
+            }
+            var artcl = { article: articleContext.articles };
+            console.log(articleContext.articles)
             res.render("index", artcl);
         }
     });
